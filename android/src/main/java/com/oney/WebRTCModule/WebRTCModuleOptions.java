@@ -1,5 +1,6 @@
 package com.oney.WebRTCModule;
 
+import org.webrtc.AudioProcessingFactory;
 import org.webrtc.Loggable;
 import org.webrtc.Logging;
 import org.webrtc.VideoDecoderFactory;
@@ -12,6 +13,7 @@ public class WebRTCModuleOptions {
     public VideoEncoderFactory videoEncoderFactory;
     public VideoDecoderFactory videoDecoderFactory;
     public AudioDeviceModule audioDeviceModule;
+    public AudioProcessingFactory audioProcessingFactory;
     public Loggable injectableLogger;
     public Logging.Severity loggingSeverity;
     public String fieldTrials;

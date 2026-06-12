@@ -68,6 +68,7 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
         WebRTCModuleOptions options = WebRTCModuleOptions.getInstance();
 
         AudioDeviceModule adm = options.audioDeviceModule;
+        AudioProcessingFactory audioProcessingFactory = options.audioProcessingFactory;
         VideoEncoderFactory encoderFactory = options.videoEncoderFactory;
         VideoDecoderFactory decoderFactory = options.videoDecoderFactory;
         Loggable injectableLogger = options.injectableLogger;
@@ -104,11 +105,16 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
         Log.d(TAG, "Using video encoder factory: " + encoderFactory.getClass().getCanonicalName());
         Log.d(TAG, "Using video decoder factory: " + decoderFactory.getClass().getCanonicalName());
 
-        mFactory = PeerConnectionFactory.builder()
-                           .setAudioDeviceModule(adm)
-                           .setVideoEncoderFactory(encoderFactory)
-                           .setVideoDecoderFactory(decoderFactory)
-                           .createPeerConnectionFactory();
+        PeerConnectionFactory.Builder factoryBuilder = PeerConnectionFactory.builder()
+                                                               .setAudioDeviceModule(adm)
+                                                               .setVideoEncoderFactory(encoderFactory)
+                                                               .setVideoDecoderFactory(decoderFactory);
+
+        if (audioProcessingFactory != null) {
+            factoryBuilder.setAudioProcessingFactory(audioProcessingFactory);
+        }
+
+        mFactory = factoryBuilder.createPeerConnectionFactory();
 
         // PeerConnectionFactory now owns the adm native pointer, and we don't need it anymore.
         adm.release();

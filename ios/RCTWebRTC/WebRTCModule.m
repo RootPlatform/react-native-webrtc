@@ -41,6 +41,7 @@
     if (self) {
         WebRTCModuleOptions *options = [WebRTCModuleOptions sharedInstance];
         id<RTCAudioDevice> audioDevice = options.audioDevice;
+        id<RTCAudioProcessingModule> audioProcessingModule = options.audioProcessingModule;
         id<RTCVideoDecoderFactory> decoderFactory = options.videoDecoderFactory;
         id<RTCVideoEncoderFactory> encoderFactory = options.videoEncoderFactory;
         NSDictionary *fieldTrials = options.fieldTrials;
@@ -69,9 +70,18 @@
         RCTLogInfo(@"Using video encoder factory: %@", NSStringFromClass([encoderFactory class]));
         RCTLogInfo(@"Using video decoder factory: %@", NSStringFromClass([decoderFactory class]));
 
-        _peerConnectionFactory = [[RTCPeerConnectionFactory alloc] initWithEncoderFactory:encoderFactory
-                                                                           decoderFactory:decoderFactory
-                                                                              audioDevice:audioDevice];
+        if (audioProcessingModule != nil) {
+            _peerConnectionFactory =
+                [[RTCPeerConnectionFactory alloc] initWithAudioDeviceModuleType:RTCAudioDeviceModuleTypePlatformDefault
+                                                          bypassVoiceProcessing:NO
+                                                                 encoderFactory:encoderFactory
+                                                                 decoderFactory:decoderFactory
+                                                          audioProcessingModule:audioProcessingModule];
+        } else {
+            _peerConnectionFactory = [[RTCPeerConnectionFactory alloc] initWithEncoderFactory:encoderFactory
+                                                                               decoderFactory:decoderFactory
+                                                                                  audioDevice:audioDevice];
+        }
 
         _peerConnections = [NSMutableDictionary new];
         _localStreams = [NSMutableDictionary new];

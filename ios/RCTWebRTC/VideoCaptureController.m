@@ -181,6 +181,11 @@
     }
 
     if (self.running && hasChanged) {
+        // Tear down the running session before restarting. On an
+        // AVCaptureMultiCamSession, restarting without stopping first re-adds a
+        // connection to an output that already has one, which throws
+        // (AVCaptureVideoDataOutput accepts one connection per media type).
+        [self stopCapture];
         [self startCapture];
     }
 }

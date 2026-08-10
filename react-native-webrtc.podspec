@@ -20,4 +20,8 @@ Pod::Spec.new do |s|
   s.framework           = 'AudioToolbox','AVFoundation', 'CoreAudio', 'CoreGraphics', 'CoreVideo', 'GLKit', 'VideoToolbox'
   s.dependency          'React-Core'
   s.dependency          'WebRTC-SDK', '=144.7559.08'
+
+  # Expo SDK 57 builds pods with vendored-xcframework deps as static libraries;
+  # keep generating a module map so `import react_native_webrtc` works in Swift.
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end
